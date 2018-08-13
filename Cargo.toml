@@ -1,0 +1,14 @@
+[package]
+name = "macro_railroad_wasm"
+version = "0.1.0"
+authors = ["Lukas Lueg <lukas.lueg@gmail.com>"]
+
+[dependencies]
+railroad = { git = "https://github.com/lukaslueg/railroad" }
+macro_railroad = { git = "https://github.com/lukaslueg/macro_railroad" }
+stdweb = "0.4"
+htmlescape = "0.3"
+syn = "0.14"
+
+[lib]
+crate-type = ["cdylib"]
