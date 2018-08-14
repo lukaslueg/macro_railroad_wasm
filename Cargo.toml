@@ -2,6 +2,7 @@
 name = "macro_railroad_wasm"
 version = "0.1.0"
 authors = ["Lukas Lueg <lukas.lueg@gmail.com>"]
+build = "build.rs"
 
 [dependencies]
 railroad = { git = "https://github.com/lukaslueg/railroad" }
@@ -12,3 +13,6 @@ syn = "0.14"
 
 [lib]
 crate-type = ["cdylib"]
+
+[build-dependencies]
+built = { version = "0.3", features=["serialized_time"], default_features=false }

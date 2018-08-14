@@ -14,7 +14,7 @@
 
         div#content {
             display: grid;
-            grid-template-columns: 2fr 3fr;
+            grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 2fr;
             grid-gap: 10px;
             height: 100vh;
@@ -39,16 +39,18 @@
         }
 
         div#copytext {
+            position: relative;
             margin-left: 10px;
             grid-column: 2;
             grid-row: 1;
+            font-size: 11pt;
         }
 
         div#output {
             border-top: 1px solid;
             grid-column: 1 / span 2;
             grid-row: 2;
-            margin: 15px;
+            margin: 0 15px 0 15px;
         }
 
         span.macro_name {
@@ -56,6 +58,14 @@
             font-decoration: underline;
             font-family: monospace, monospace;
 			font-size: smaller;
+        }
+
+        div#version_info {
+            position: absolute;
+            bottom: 0;
+            color: dimgray;
+            font-family: monospace, monospace;
+            font-size: 6pt;
         }
 
         </style>
@@ -82,24 +92,30 @@
                 <a href="https://github.com/lukaslueg/macro_railroad">
                     <img style="float: right" src="forkme.svg" width="150" height="150" alt="Fork me!">
                 </a>
-                <div style="margin-top: 15px; margin-right: 15px">
+                <div style="margin-top: 15px; margin-right: 15px; background-color: white;">
                 This is a demonstration of a pure-rust library to generate <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/syntaxdiagrams.html">syntax diagrams</a> for <span class="macro_name">macro_rules!()</span>.<br><br>
-The syntax of rust's macros can get out of hand very quickly and it can be very hard to understand what input-pattern a macro requires. This library aims at helping to remedy this situation. Diagrams are generated fully automatically from rust-source as Scalable Vector Graphics, using customizable CSS for layout.<br><br>
-Paste a <span class="macro_name">macro_rules!()</span>-block into the text-area on the left; modify them as you wish. A wasm-blob will generate a syntax-diagram as an SVG in the area below.<br><br>
-Here are some examples:
-                <ul>
+Diagrams are generated fully automatically from rust-source as Scalable Vector Graphics, using customizable CSS for layout.<br><br>
+<span style="font-weight: bold">Paste a <span class="macro_name">macro_rules!()</span>-block into the text-area on the left</span>; modify them as you wish. A wasm-blob will generate a syntax-diagram as an SVG in the area below.<br>If you found a bug, a quirk or a macro that doesn't parse but should, please report it liberally.<br>
+<br>Here are some examples:
+                <table> <tr>
+                <td style="padding-right: 15px"> <ul>
                     <li><a href="javascript:set_macro('bitflags')"><span class="macro_name">bitflags!()</span> from the `bitflags`-crate</a></li>
                     <li><a href="javascript:set_macro('cond_reduce')"><span class="macro_name">cond_reduce!()</span> from `syn`</a></li>
                     <li><a href="javascript:set_macro('cfg_if')"><span class="macro_name">cfg_if!()</span> from `cfg-if`</a></li>
                     <li><a href="javascript:set_macro('panic')"><span class="macro_name">panic!()</span> from the standard library</a></li>
+                </ul> </td>
+                <td> <ul>
                     <li><a href="javascript:set_macro('gfxdefines')"><span class="macro_name">gfx_defines!()</span> from `gfx-rs`</a></li>
                     <li><a href="javascript:set_macro('sep')"><span class="macro_name">sep!()</span> from `nom`</a></li>
                     <li><a href="javascript:set_macro('named_attrs')"><span class="macro_name">named_attrs!()</span> from `nom`</a></li>
                     <li><a href="javascript:set_macro('verify')"><span class="macro_name">verify!()</span> from `nom`</a></li>
-                </ul>
+                </ul> </td>
+                </tr> </table>
 
                 <span style="font-style: italic">As an exercise: Load the <span class="macro_name">verify!()</span>-example; ensure that the layout-optimization is enabled; in the last pattern, change the name from `submac` to `submac2` and `args` to `args2`; notice the new layout.</span>
+
                 </div>
+                <div id="version_info" style="z-index: -1; margin-right: 15px"></div>
             </div>
 
             <div id="output"></div>
@@ -241,6 +257,9 @@ Here are some examples:
                         document.getElementById( "output" ).innerHTML = diagram;
                     }
                     update_output = _update_output;
+
+                    document.getElementById( "version_info" ).innerText = railroad.version_info();
+
                     document.getElementById( "macro_text" ).addEventListener( "keyup", function( event ) { update_output(); });
                     document.getElementById( "opt_internal" ).addEventListener( "change", function( event ) { update_output(); });
                     document.getElementById( "opt_fold" ).addEventListener( "change", function( event ) { update_output(); });

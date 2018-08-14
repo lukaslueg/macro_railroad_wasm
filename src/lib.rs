@@ -11,6 +11,15 @@ extern crate htmlescape;
 
 use stdweb::js_export;
 
+#[allow(dead_code)]
+mod built_info {
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
+#[js_export]
+fn version_info() -> String {
+    format!("WASM-blob built {} on {} using {}", built_info::BUILT_TIME_UTC, built_info::RUSTC_VERSION, built_info::DEPENDENCIES_STR)
+}
 
 #[js_export]
 fn to_diagram_node(src: &str, hide_internal: bool, foldcommontails: bool, legend: bool) -> String {
