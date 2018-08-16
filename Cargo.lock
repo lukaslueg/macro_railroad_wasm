@@ -35,7 +35,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "macro_railroad"
 version = "0.1.0"
-source = "git+https://github.com/lukaslueg/macro_railroad#458b13044afbdccdd5a893f64cf27c6951fd4566"
+source = "git+https://github.com/lukaslueg/macro_railroad#2a45b0c52de19a1dfb25d10c560b709c03b460fd"
 dependencies = [
  "proc-macro2 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "railroad 0.1.0 (git+https://github.com/lukaslueg/railroad)",
@@ -89,7 +89,7 @@ dependencies = [
 [[package]]
 name = "railroad"
 version = "0.1.0"
-source = "git+https://github.com/lukaslueg/railroad#8d412bf8b77c8f8baf68c315db99ff07fbe35bf0"
+source = "git+https://github.com/lukaslueg/railroad#3d2f1affc38e0b89775f6b5710292735d0509b54"
 dependencies = [
  "htmlescape 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
