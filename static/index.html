@@ -103,10 +103,11 @@ Diagrams are generated fully automatically from rust-source as Scalable Vector G
                 <td style="padding-right: 15px"> <ul>
                     <li><a href="javascript:set_macro('bitflags')"><span class="macro_name">bitflags!()</span> from the `bitflags`-crate</a></li>
                     <li><a href="javascript:set_macro('cond_reduce')"><span class="macro_name">cond_reduce!()</span> from `syn`</a></li>
+                    <li><a href="javascript:set_macro('method')"><span class="macro_name">method!()</span> from `nom`</a></li>
                     <li><a href="javascript:set_macro('cfg_if')"><span class="macro_name">cfg_if!()</span> from `cfg-if`</a></li>
                     <li><a href="javascript:set_macro('panic')"><span class="macro_name">panic!()</span> from the standard library</a></li>
                 </ul> </td>
-                <td> <ul>
+                <td style="vertical-align: top"> <ul>
                     <li><a href="javascript:set_macro('gfxdefines')"><span class="macro_name">gfx_defines!()</span> from `gfx-rs`</a></li>
                     <li><a href="javascript:set_macro('sep')"><span class="macro_name">sep!()</span> from `nom`</a></li>
                     <li><a href="javascript:set_macro('named_attrs')"><span class="macro_name">named_attrs!()</span> from `nom`</a></li>
@@ -161,6 +162,29 @@ Diagrams are generated fully automatically from rust-source as Scalable Vector G
     ($i:expr, $cond:expr, $submac:ident!( $($args:tt)* )) => { ... };
     ($i:expr, $cond:expr) => { ... };
     ($i:expr, $cond:expr, $f:expr) => { ... };
+}`;
+                    } else if ( macro_name === "method" ) {
+                        macro_text.value = `macro_rules! method {
+    ($name:ident<$a:ty>( $i:ty ) -> $o:ty, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty,$i:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty>( $i:ty ) -> $o:ty, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty,$i:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty>( $i:ty ) -> $o:ty, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty,$i:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    ($name:ident<$a:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty>( $i:ty ) -> $o:ty, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty,$i:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
+    (pub $name:ident<$a:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
 }`;
                     } else if ( macro_name === "sep" ) {
                         macro_text.value = `macro_rules! sep {
