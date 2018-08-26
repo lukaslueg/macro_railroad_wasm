@@ -1,6 +1,6 @@
 [[package]]
 name = "base-x"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -35,11 +35,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "macro_railroad"
 version = "0.1.0"
-source = "git+https://github.com/lukaslueg/macro_railroad#2a45b0c52de19a1dfb25d10c560b709c03b460fd"
+source = "git+https://github.com/lukaslueg/macro_railroad#b10d03003a2765b73eae3a762294f8b7f6bc250c"
 dependencies = [
- "proc-macro2 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "railroad 0.1.0 (git+https://github.com/lukaslueg/railroad)",
- "syn 0.14.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.14.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -51,7 +51,7 @@ dependencies = [
  "macro_railroad 0.1.0 (git+https://github.com/lukaslueg/macro_railroad)",
  "railroad 0.1.0 (git+https://github.com/lukaslueg/railroad)",
  "stdweb 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 0.14.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.14.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -64,7 +64,7 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "0.4.12"
+version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -80,18 +80,19 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "0.6.6"
+version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "proc-macro2 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "railroad"
 version = "0.1.0"
-source = "git+https://github.com/lukaslueg/railroad#3d2f1affc38e0b89775f6b5710292735d0509b54"
+source = "git+https://github.com/lukaslueg/railroad#e4dbd21fff708c2437748181d8e1154d2c8548f6"
 dependencies = [
  "htmlescape 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicode-width 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -101,22 +102,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "ryu"
-version = "0.2.3"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "serde"
-version = "1.0.71"
+version = "1.0.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "serde_derive"
-version = "1.0.71"
+version = "1.0.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "proc-macro2 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 0.6.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 0.14.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "quote 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.14.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -125,8 +126,8 @@ version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "itoa 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "ryu 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ryu 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -135,7 +136,7 @@ version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "discard 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.26 (registry+https://github.com/rust-lang/crates.io-index)",
  "stdweb-derive 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "stdweb-internal-macros 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -147,8 +148,8 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "quote 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_derive 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)",
  "syn 0.12.15 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -157,10 +158,10 @@ name = "stdweb-internal-macros"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "base-x 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "base-x 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_derive 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.26 (registry+https://github.com/rust-lang/crates.io-index)",
  "syn 0.12.15 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -177,11 +178,11 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "0.14.8"
+version = "0.14.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "proc-macro2 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 0.6.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "quote 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -200,8 +201,13 @@ name = "toml"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "serde 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "unicode-width"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "unicode-xid"
@@ -228,7 +234,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
-"checksum base-x 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "2f59103b47307f76e03bef1633aec7fa9e29bfb5aa6daf5a334f94233c71f6c1"
+"checksum base-x 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "5cda5d0f5584d129112ad8bf4775b9fd2b9f1e30738c7b1a25314ba2244d6a51"
 "checksum built 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "61f5aae2fa15b68fbcf0cbab64e659a55d10e9bacc55d3470ef77ae73030d755"
 "checksum discard 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "9a9117502da3c5657cb8e2ca7ffcf52d659f00c78c5127d1ebadc2ebe76465be"
 "checksum htmlescape 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "e9025058dae765dee5070ec375f591e2ba14638c63feff74f13805a72e523163"
@@ -236,22 +242,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum libc 0.2.43 (registry+https://github.com/rust-lang/crates.io-index)" = "76e3a3ef172f1a0b9a9ff0dd1491ae5e6c948b94479a3021819ba7d860c8645d"
 "checksum macro_railroad 0.1.0 (git+https://github.com/lukaslueg/macro_railroad)" = "<none>"
 "checksum proc-macro2 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "cd07deb3c6d1d9ff827999c7f9b04cdfd66b1b17ae508e14fe47b620f2282ae0"
-"checksum proc-macro2 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)" = "7a17a4d77bc20d344179de803a34694c0ac7a0b3fb4384bee99783215a8e0410"
+"checksum proc-macro2 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)" = "ee5697238f0d893c7f0ecc59c0999f18d2af85e424de441178bcacc9f9e6cf67"
 "checksum quote 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "1eca14c727ad12702eb4b6bfb5a232287dcf8385cb8ca83a3eeaf6519c44c408"
-"checksum quote 0.6.6 (registry+https://github.com/rust-lang/crates.io-index)" = "ed7d650913520df631972f21e104a4fa2f9c82a14afc65d17b388a2e29731e7c"
+"checksum quote 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)" = "dd636425967c33af890042c483632d33fa7a18f19ad1d7ea72e8998c6ef8dea5"
 "checksum railroad 0.1.0 (git+https://github.com/lukaslueg/railroad)" = "<none>"
 "checksum redox_syscall 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)" = "c214e91d3ecf43e9a4e41e578973adeb14b474f2bee858742d127af75a0112b1"
-"checksum ryu 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "16aa12da69951804cddf5f74d96abcc414a31b064e610dc81e37c1536082f491"
-"checksum serde 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)" = "6dfad05c8854584e5f72fb859385ecdfa03af69c3fd0572f0da2d4c95f060bdb"
-"checksum serde_derive 1.0.71 (registry+https://github.com/rust-lang/crates.io-index)" = "b719c6d5e9f73fbc37892246d5852333f040caa617b8873c6aced84bcb28e7bb"
+"checksum ryu 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)" = "7153dd96dade874ab973e098cb62fcdbb89a03682e46b144fd09550998d4a4a7"
+"checksum serde 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)" = "22d340507cea0b7e6632900a176101fea959c7065d93ba555072da90aaaafc87"
+"checksum serde_derive 1.0.75 (registry+https://github.com/rust-lang/crates.io-index)" = "234fc8b737737b148ccd625175fc6390f5e4dacfdaa543cb93a3430d984a9119"
 "checksum serde_json 1.0.26 (registry+https://github.com/rust-lang/crates.io-index)" = "44dd2cfde475037451fa99b7e5df77aa3cfd1536575fa8e7a538ab36dcde49ae"
 "checksum stdweb 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)" = "d9f48cd7f81100e9bcbc67b97f1b1c465e4ae25d6a420ebf4b4f7f2dde7c2a5c"
 "checksum stdweb-derive 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6aa46e9b38ea028a8a327ae6db35a486ace3eb834f5600bb3b6a71c0b6b1bd4b"
 "checksum stdweb-internal-macros 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b0bb3289dfd46bba44d80ed47a9b3d4c43bf6c1d7931b29e2fa86bd6697ccf59"
 "checksum syn 0.12.15 (registry+https://github.com/rust-lang/crates.io-index)" = "c97c05b8ebc34ddd6b967994d5c6e9852fa92f8b82b3858c39451f97346dcce5"
-"checksum syn 0.14.8 (registry+https://github.com/rust-lang/crates.io-index)" = "b7bfcbb0c068d0f642a0ffbd5c604965a360a61f99e8add013cef23a838614f3"
+"checksum syn 0.14.9 (registry+https://github.com/rust-lang/crates.io-index)" = "261ae9ecaa397c42b960649561949d69311f08eeaea86a65696e6e46517cf741"
 "checksum time 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)" = "d825be0eb33fda1a7e68012d51e9c7f451dc1a69391e7fdc197060bb8c56667b"
 "checksum toml 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)" = "a0263c6c02c4db6c8f7681f9fd35e90de799ebd4cfdeab77a38f4ff6b3d8c0d9"
+"checksum unicode-width 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "882386231c45df4700b275c7ff55b6f3698780a650026380e72dabe76fa46526"
 "checksum unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fc72304796d0818e357ead4e000d19c9c174ab23dc11093ac919054d20a6a7fc"
 "checksum winapi 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "773ef9dcc5f24b7d850d0ff101e542ff24c3b090a9768e03ff889fdef41f00fd"
 "checksum winapi-i686-pc-windows-gnu 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
