@@ -22,8 +22,8 @@ fn version_info() -> String {
 }
 
 #[js_export]
-fn to_diagram_node(src: &str, hide_internal: bool, foldcommontails: bool, legend: bool) -> String {
-    match to_diagram(src, hide_internal, foldcommontails, legend) {
+fn to_diagram_node(src: &str, hide_internal: bool, ungroup: bool, foldcommontails: bool, legend: bool) -> String {
+    match to_diagram(src, hide_internal, ungroup, foldcommontails, legend) {
         Err(e) => {
             format!(r#"
 Failed to parse, and I didn't even write an error-handler. Anyway:
@@ -41,7 +41,7 @@ Failed to parse, and I didn't even write an error-handler. Anyway:
     }
 }
 
-fn to_diagram(src: &str, hide_internal: bool, foldcommontails: bool, legend: bool) -> Result<(String, railroad::Diagram<Box<railroad::RailroadNode>>), syn::synom::ParseError> {
+fn to_diagram(src: &str, hide_internal: bool, ungroup: bool, foldcommontails: bool, legend: bool) -> Result<(String, railroad::Diagram<Box<railroad::RailroadNode>>), syn::synom::ParseError> {
     let macro_rules = macro_railroad::parser::parse(&src)?;
 
     let mut tree = macro_railroad::lowering::MacroRules::from(macro_rules);
@@ -50,9 +50,15 @@ fn to_diagram(src: &str, hide_internal: bool, foldcommontails: bool, legend: boo
         tree.remove_internal();
     }
 
+    if ungroup {
+        tree.ungroup();
+    }
+
     if foldcommontails {
         tree.foldcommontails();
     }
+
+    tree.normalize();
 
     let name = tree.name.clone();
 
