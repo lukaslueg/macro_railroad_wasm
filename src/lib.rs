@@ -41,7 +41,7 @@ Failed to parse, and I didn't even write an error-handler. Anyway:
     }
 }
 
-fn to_diagram(src: &str, hide_internal: bool, ungroup: bool, foldcommontails: bool, legend: bool) -> Result<(String, railroad::Diagram<Box<railroad::RailroadNode>>), syn::synom::ParseError> {
+fn to_diagram(src: &str, hide_internal: bool, ungroup: bool, foldcommontails: bool, legend: bool) -> Result<(String, railroad::Diagram<Box<railroad::RailroadNode>>), syn::parse::Error> {
     let macro_rules = macro_railroad::parser::parse(&src)?;
 
     let mut tree = macro_railroad::lowering::MacroRules::from(macro_rules);
