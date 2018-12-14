@@ -1,7 +1,3 @@
-#![allow(stable_features)]
-#![feature(proc_macro)]
-#![feature(use_extern_macros)]
-
 #[macro_use]
 extern crate stdweb;
 extern crate railroad;
