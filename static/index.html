@@ -92,13 +92,15 @@
 
             <div id="copytext">
                 <a href="https://github.com/lukaslueg/macro_railroad">
-                    <img style="float: right" src="forkme.svg" width="150" height="150" alt="Fork me!">
+                    <img style="float: right" src="forkme.svg" width="120" height="120" alt="Fork me!">
                 </a>
                 <div style="margin-top: 15px; margin-right: 15px; background-color: white;">
-                This is a demonstration of a pure-rust library to generate <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/syntaxdiagrams.html">syntax diagrams</a> for <span class="macro_name">macro_rules!()</span>.<br><br>
-Diagrams are generated fully automatically from rust-source as Scalable Vector Graphics, using customizable CSS for layout.<br><br>
-<span style="font-weight: bold">Paste a <span class="macro_name">macro_rules!()</span>-block into the text-area on the left</span>; modify them as you wish. A wasm-blob will generate a syntax-diagram as an SVG in the area below.<br>If you found a bug, a quirk or a macro that doesn't parse but should, please report it liberally.<br>
-<br>Here are some examples:
+                This is a demonstration of a pure-rust library to generate <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/syntaxdiagrams.html">syntax diagrams</a> for <span class="macro_name">macro_rules!()</span>.<br><br>Diagrams are generated fully automatically from rust-source as Scalable Vector Graphics, using customizable CSS for layout.<br><br>
+
+                <span style="font-weight: bold">Paste a <span class="macro_name">macro_rules!()</span>-block into the text-area on the left</span>; modify them as you wish. A wasm-blob will generate a syntax-diagram as an SVG in the area below.<br>If you found a bug, a quirk or a macro that doesn't parse but should, please report it liberally.<br>
+
+
+                <br>Here are some examples:
                 <table> <tr>
                 <td style="padding-right: 15px"> <ul>
                     <li><a href="javascript:set_macro('bitflags')"><span class="macro_name">bitflags!()</span> from the `bitflags`-crate</a></li>
@@ -113,9 +115,16 @@ Diagrams are generated fully automatically from rust-source as Scalable Vector G
                     <li><a href="javascript:set_macro('named_attrs')"><span class="macro_name">named_attrs!()</span> from `nom`</a></li>
                     <li><a href="javascript:set_macro('verify')"><span class="macro_name">verify!()</span> from `nom`</a></li>
                 </ul> </td>
-                </tr> </table>
+                </tr>
+                </table>
 
-                <span style="font-style: italic">As an exercise: Load the <span class="macro_name">verify!()</span>-example; ensure that the layout-optimization is enabled; in the last pattern, change the name from `submac` to `submac2` and `args` to `args2`; notice the new layout.</span>
+                <br>
+                <div id="share_url">
+                    <a>
+                        <span style="font-weight: bold">Permalink for the current input.</span>
+                    </a>
+                </div>
+                <br>
 
                 </div>
                 <div id="version_info" style="z-index: -1; margin-right: 15px"></div>
@@ -275,6 +284,12 @@ Diagrams are generated fully automatically from rust-source as Scalable Vector G
 
                 Rust.macro_railroad_wasm.then( function( railroad ) {
                     function _update_output() {
+                        var m = document.getElementById("macro_text").value;
+                        var url = new URL(window.location.href);
+                        url.searchParams.set("m", m);
+                        console.log(url.toString());
+                        document.getElementById("share_url").firstElementChild.href = url;
+
                         var macro_text = document.getElementById( "macro_text" ).value;
                         var opt_internal = document.getElementById( "opt_internal" ).checked;
                         var opt_ungroup = !document.getElementById( "opt_ungroup" ).checked;
@@ -292,6 +307,11 @@ Diagrams are generated fully automatically from rust-source as Scalable Vector G
                     document.getElementById( "opt_ungroup" ).addEventListener( "change", function( event ) { update_output(); });
                     document.getElementById( "opt_fold" ).addEventListener( "change", function( event ) { update_output(); });
                     document.getElementById( "opt_legend" ).addEventListener( "change", function( event ) { update_output(); });
+
+                    var urlParams = new URLSearchParams(location.search);
+                    if (urlParams.get("m") !== null) {
+                        document.getElementById("macro_text").value = urlParams.get("m");
+                    }
                     update_output();
                 });
             </script>
