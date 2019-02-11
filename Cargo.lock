@@ -35,7 +35,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "macro_railroad"
 version = "0.1.0"
-source = "git+https://github.com/lukaslueg/macro_railroad#476bbf0dba47f6f4b2ed53fadfaf8fbb2c48b408"
+source = "git+https://github.com/lukaslueg/macro_railroad#50ff817d3d2178394499c139e1eef47d070bcf46"
 dependencies = [
  "proc-macro2 0.4.27 (registry+https://github.com/rust-lang/crates.io-index)",
  "railroad 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
