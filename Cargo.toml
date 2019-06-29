@@ -7,9 +7,9 @@ build = "build.rs"
 [dependencies]
 railroad = "0.1"
 macro_railroad = "0.1"
-stdweb = "0.4"
+stdweb = { version = "0.4", default_features=false }
 htmlescape = "0.3"
-syn = "0.15"
+syn = { version = "0.15", default_features=false }
 
 [lib]
 crate-type = ["cdylib"]
