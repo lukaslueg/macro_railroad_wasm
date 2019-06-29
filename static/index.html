@@ -114,6 +114,7 @@
                     <li><a href="javascript:set_macro('sep')"><span class="macro_name">sep!()</span> from `nom`</a></li>
                     <li><a href="javascript:set_macro('named_attrs')"><span class="macro_name">named_attrs!()</span> from `nom`</a></li>
                     <li><a href="javascript:set_macro('verify')"><span class="macro_name">verify!()</span> from `nom`</a></li>
+                    <li><a href="javascript:set_macro('hodor')"><span class="macro_name">HODOR!()</span>, an esolang</a></li>
                 </ul> </td>
                 </tr>
                 </table>
@@ -277,6 +278,46 @@
             )+
         }
     ) => { ... };
+}`;
+                    } else if ( macro_name === "hodor" ) {
+                        macro_text.value = `macro_rules! HODOR {
+ ($ptr:ident; $vec:ident;) => {};
+ ($ptr:ident; $vec:ident;  HODOR.  HODOR? $($x:tt)*) => {
+    $ptr+=1;
+    HODOR!($ptr; $vec; $($x)*);
+ };
+
+ ($ptr:ident; $vec:ident;  HODOR?  HODOR. $($x:tt)*) => {
+    $ptr-=1;
+    HODOR!($ptr; $vec; $($x)*);
+ };
+
+ ($ptr:ident; $vec:ident;  HODOR.  HODOR. $($x:tt)*) => {
+    $vec[$ptr]+=1;
+    HODOR!($ptr; $vec; $($x)*);
+ };
+
+ ($ptr:ident; $vec:ident;  HODOR!  HODOR! $($x:tt)*) => {
+    $vec[$ptr]-=1;
+    HODOR!($ptr; $vec; $($x)*);
+ };
+
+ ($ptr:ident; $vec:ident;  HODOR!  HODOR. $($x:tt)*) => {
+    print($vec[$ptr]);
+    HODOR!($ptr; $vec; $($x)*);
+ };
+
+ ($ptr:ident; $vec:ident;  HODOR.  HODOR! $($x:tt)*) => {
+    $vec[$ptr] = input();
+    HODOR!($ptr; $vec; $($x)*);
+ };
+
+ ($ptr:ident; $vec:ident; [ $($inner:tt)* ] $($x:tt)*) => {
+    while $vec[$ptr] != 0 {
+       HODOR!($ptr; $vec; $($inner)*) ;
+    }
+    HODOR!($ptr; $vec; $($x)+)
+ };
 }`;
                     }
                     update_output();
