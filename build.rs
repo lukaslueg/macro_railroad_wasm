@@ -1,4 +1,4 @@
-extern crate built;
+use built;
 
 use std::env;
 use std::path;
