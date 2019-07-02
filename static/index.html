@@ -248,6 +248,9 @@
             else if #[cfg($($e_met:meta),*)] { $($e_it:item)* }
         )*
     ) => { ... };
+    (@__items ($($not:meta,)*) ; ) => { ... };
+    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($it:item)*) ), $($rest:tt)*) => { ... };
+    (@__apply $m:meta, $($it:item)*) => { ... };
 }`;
                     } else if ( macro_name === "bitflags" ) {
                         macro_text.value = `macro_rules! bitflags {
