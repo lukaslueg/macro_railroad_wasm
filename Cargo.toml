@@ -10,7 +10,7 @@ railroad = "0.1"
 macro_railroad = "0.1"
 stdweb = { version = "0.4", default_features=false }
 htmlescape = "0.3"
-syn = { version = "0.15", default_features=false }
+syn = { version = "1.0", default_features=false }
 
 [lib]
 crate-type = ["cdylib"]
