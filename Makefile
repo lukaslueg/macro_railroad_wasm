@@ -1,8 +1,30 @@
-.DEFAULT_GOAL := target/deploy/macro_railroad_wasm.wasm
+.DEFAULT_GOAL := all
 
 Cargo.lock:
 	cargo update
 
-target/deploy/macro_railroad_wasm.wasm: Cargo.lock Cargo.toml Web.toml src/lib.rs static/index.html static/forkme.svg
-	cargo web deploy --release
-	wasm-opt -Oz -o $@ $@
+pkg/macro_railroad_wasm_bg.wasm: Cargo.lock Cargo.toml src/lib.rs
+	wasm-pack build --target web
+
+pkg/macro_railroad_wasm.js: pkg/macro_railroad_wasm_bg.wasm;
+
+static/macro_railroad_wasm_bg.wasm: pkg/macro_railroad_wasm_bg.wasm
+	cp $< $@
+
+static/macro_railroad_wasm.js: pkg/macro_railroad_wasm.js
+	cp $< $@
+
+
+.PHONY: all
+all: static/macro_railroad_wasm_bg.wasm static/macro_railroad_wasm.js static/index.html;
+
+.PHONY: serve
+serve: all
+	cd static && python -m http.server
+
+.PHONY: clean
+clean:
+	-rm static/macro_railroad_wasm.js
+	-rm static/macro_railroad_wasm_bg.wasm
+	-rm -rf target/
+	-rm -rf pkg/

@@ -1,16 +1,11 @@
-#[cfg(cargo_web)]
-#[macro_use]
-extern crate stdweb;
-
-#[cfg(cargo_web)]
-use stdweb::js_export;
+use wasm_bindgen::prelude::*;
 
 #[allow(dead_code)]
 mod built_info {
     include!(concat!(env!("OUT_DIR"), "/built.rs"));
 }
 
-#[cfg_attr(cargo_web, js_export)]
+#[wasm_bindgen]
 pub fn version_info() -> String {
     format!(
         "WASM-blob built {} on {} using {}",
@@ -20,7 +15,7 @@ pub fn version_info() -> String {
     )
 }
 
-#[cfg_attr(cargo_web, js_export)]
+#[wasm_bindgen]
 pub fn to_diagram_node(
     src: &str,
     hide_internal: bool,

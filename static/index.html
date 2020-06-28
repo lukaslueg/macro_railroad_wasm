@@ -71,73 +71,41 @@
         </style>
     </head>
     <body>
-        <div id="content">
-            <div id="input">
-                <textarea rows="25" name="macro_text" id="macro_text" data-gramm_editor="false">macro_rules! named {
-    ($name:ident -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-    (pub $name:ident -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-    ($name:ident($($params:tt)*) -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-    (pub $name:ident($($params:tt)*) -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-}</textarea>
-                <br>
-                <input type="checkbox" id="opt_internal" checked>
-                <label for="opt_internal">Hide macro-internal rules</label>
-                <input type="checkbox" id="opt_ungroup" checked>
-                <label for="opt_ungroup">Preserve groups</label>
-                <input type="checkbox" id="opt_fold" checked>
-                <label for="opt_fold">Optimize layout by folding common sections</label>
-                <input type="checkbox" id="opt_legend" checked>
-                <label for="opt_legend">Create legend</label>
-            </div>
+            <script type="module">
+            import init, { version_info, to_diagram_node } from './macro_railroad_wasm.js';
 
-            <div id="copytext">
-                <a href="https://github.com/lukaslueg/macro_railroad">
-                    <img style="float: right" src="forkme.svg" width="120" height="120" alt="Fork me!">
-                </a>
-                <div style="margin-top: 15px; margin-right: 15px; background-color: white;">
-                This is a demonstration of a pure-rust library to generate <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/syntaxdiagrams.html">syntax diagrams</a> for <span class="macro_name">macro_rules!()</span>.<br><br>Diagrams are generated fully automatically from rust-source as Scalable Vector Graphics, using customizable CSS for layout.<br><br>
+            async function run() {
+                await init();
+                console.log(version_info());
 
-                <span style="font-weight: bold">Paste a <span class="macro_name">macro_rules!()</span>-block into the text-area on the left</span>; modify them as you wish. A wasm-blob will generate a syntax-diagram as an SVG in the area below.<br>If you found a bug, a quirk or a macro that doesn't parse but should, please report it liberally.<br>
+                function update_output() {
+                    var macro_text = document.getElementById( "macro_text" ).value;
+                    var opt_internal = document.getElementById( "opt_internal" ).checked;
+                    var opt_ungroup = !document.getElementById( "opt_ungroup" ).checked;
+                    var opt_fold = document.getElementById( "opt_fold" ).checked;
+                    var opt_legend = document.getElementById( "opt_legend" ).checked;
+                    var diagram = to_diagram_node( macro_text, opt_internal, opt_ungroup, opt_fold, opt_legend);
+                    document.getElementById( "output" ).innerHTML = diagram;
+                }
 
+                document.getElementById( "version_info" ).innerText = version_info();
 
-                <br>Here are some examples:
-                <table> <tr>
-                <td style="padding-right: 15px"> <ul>
-                    <li><a href="javascript:set_macro('bitflags')"><span class="macro_name">bitflags!()</span> from the `bitflags`-crate</a></li>
-                    <li><a href="javascript:set_macro('cond_reduce')"><span class="macro_name">cond_reduce!()</span> from `syn`</a></li>
-                    <li><a href="javascript:set_macro('method')"><span class="macro_name">method!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('cfg_if')"><span class="macro_name">cfg_if!()</span> from `cfg-if`</a></li>
-                    <li><a href="javascript:set_macro('panic')"><span class="macro_name">panic!()</span> from the standard library</a></li>
-                </ul> </td>
-                <td style="vertical-align: top"> <ul>
-                    <li><a href="javascript:set_macro('gfxdefines')"><span class="macro_name">gfx_defines!()</span> from `gfx-rs`</a></li>
-                    <li><a href="javascript:set_macro('sep')"><span class="macro_name">sep!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('named_attrs')"><span class="macro_name">named_attrs!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('verify')"><span class="macro_name">verify!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('hodor')"><span class="macro_name">HODOR!()</span>, an esolang</a></li>
-                </ul> </td>
-                </tr>
-                </table>
+                document.getElementById( "macro_text" ).addEventListener( "keyup", function( event ) { update_output(); });
+                document.getElementById( "opt_internal" ).addEventListener( "change", function( event ) { update_output(); });
+                document.getElementById( "opt_ungroup" ).addEventListener( "change", function( event ) { update_output(); });
+                document.getElementById( "opt_fold" ).addEventListener( "change", function( event ) { update_output(); });
+                document.getElementById( "opt_legend" ).addEventListener( "change", function( event ) { update_output(); });
 
-                <br>
-                <div id="share_url">
-                    <a>
-                        <span style="font-weight: bold">Permalink for the current input.</span>
-                    </a>
-                </div>
-                <br>
+                var urlParams = new URLSearchParams(location.search);
+                if (urlParams.get("m") !== null) {
+                    document.getElementById("macro_text").value = urlParams.get("m");
+                }
+                window.update_output = update_output;
+                update_output();
+            }
 
-                </div>
-                <div id="version_info" style="z-index: -1; margin-right: 15px"></div>
-            </div>
-
-            <div id="output"></div>
-
-            <script src="macro_railroad_wasm.js"></script>
-            <script>
-                var update_output;
-
-                function set_macro( macro_name) {
+            run();
+                function set_macro(macro_name) {
                     var macro_text = document.getElementById( "macro_text" );
                     if (macro_name === 'gfxdefines') {
 						macro_text.value = `macro_rules! gfx_defines {
@@ -325,40 +293,59 @@
                     }
                     update_output();
                 }
-
-                Rust.macro_railroad_wasm.then( function( railroad ) {
-                    function _update_output() {
-                        var m = document.getElementById("macro_text").value;
-                        var url = new URL(window.location.href);
-                        url.searchParams.set("m", m);
-                        console.log(url.toString());
-                        document.getElementById("share_url").firstElementChild.href = url;
-
-                        var macro_text = document.getElementById( "macro_text" ).value;
-                        var opt_internal = document.getElementById( "opt_internal" ).checked;
-                        var opt_ungroup = !document.getElementById( "opt_ungroup" ).checked;
-                        var opt_fold = document.getElementById( "opt_fold" ).checked;
-                        var opt_legend = document.getElementById( "opt_legend" ).checked;
-                        var diagram = railroad.to_diagram_node( macro_text, opt_internal, opt_ungroup, opt_fold, opt_legend);
-                        document.getElementById( "output" ).innerHTML = diagram;
-                    }
-                    update_output = _update_output;
-
-                    document.getElementById( "version_info" ).innerText = railroad.version_info();
-
-                    document.getElementById( "macro_text" ).addEventListener( "keyup", function( event ) { update_output(); });
-                    document.getElementById( "opt_internal" ).addEventListener( "change", function( event ) { update_output(); });
-                    document.getElementById( "opt_ungroup" ).addEventListener( "change", function( event ) { update_output(); });
-                    document.getElementById( "opt_fold" ).addEventListener( "change", function( event ) { update_output(); });
-                    document.getElementById( "opt_legend" ).addEventListener( "change", function( event ) { update_output(); });
-
-                    var urlParams = new URLSearchParams(location.search);
-                    if (urlParams.get("m") !== null) {
-                        document.getElementById("macro_text").value = urlParams.get("m");
-                    }
-                    update_output();
-                });
+                window.set_macro = set_macro;
             </script>
+        <div id="content">
+            <div id="input">
+                <textarea rows="25" name="macro_text" id="macro_text" data-gramm_editor="false">macro_rules! named {
+    ($name:ident -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
+    (pub $name:ident -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
+    ($name:ident($($params:tt)*) -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
+    (pub $name:ident($($params:tt)*) -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
+}</textarea>
+                <br>
+                <input type="checkbox" id="opt_internal" checked>
+                <label for="opt_internal">Hide macro-internal rules</label>
+                <input type="checkbox" id="opt_ungroup" checked>
+                <label for="opt_ungroup">Preserve groups</label>
+                <input type="checkbox" id="opt_fold" checked>
+                <label for="opt_fold">Optimize layout by folding common sections</label>
+                <input type="checkbox" id="opt_legend" checked>
+                <label for="opt_legend">Create legend</label>
+            </div>
+
+            <div id="copytext">
+                <a href="https://github.com/lukaslueg/macro_railroad">
+                    <img style="float: right" src="forkme.svg" width="120" height="120" alt="Fork me!">
+                </a>
+                <div style="margin-top: 15px; margin-right: 15px; background-color: white;">
+                This is a demonstration of a pure-rust library to generate <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/syntaxdiagrams.html">syntax diagrams</a> for <span class="macro_name">macro_rules!()</span>.<br><br>Diagrams are generated fully automatically from rust-source as Scalable Vector Graphics, using customizable CSS for layout.<br><br>
+
+                <span style="font-weight: bold">Paste a <span class="macro_name">macro_rules!()</span>-block into the text-area on the left</span>; modify them as you wish. A wasm-blob will generate a syntax-diagram as an SVG in the area below.<br>If you found a bug, a quirk or a macro that doesn't parse but should, please report it liberally.<br>
+
+
+                <br>Here are some examples:
+                <table> <tr>
+                <td style="padding-right: 15px"> <ul>
+                    <li><a href="javascript:set_macro('bitflags')"><span class="macro_name">bitflags!()</span> from the `bitflags`-crate</a></li>
+                    <li><a href="javascript:set_macro('cond_reduce')"><span class="macro_name">cond_reduce!()</span> from `syn`</a></li>
+                    <li><a href="javascript:set_macro('method')"><span class="macro_name">method!()</span> from `nom`</a></li>
+                    <li><a href="javascript:set_macro('cfg_if')"><span class="macro_name">cfg_if!()</span> from `cfg-if`</a></li>
+                    <li><a href="javascript:set_macro('panic')"><span class="macro_name">panic!()</span> from the standard library</a></li>
+                </ul> </td>
+                <td style="vertical-align: top"> <ul>
+                    <li><a href="javascript:set_macro('gfxdefines')"><span class="macro_name">gfx_defines!()</span> from `gfx-rs`</a></li>
+                    <li><a href="javascript:set_macro('sep')"><span class="macro_name">sep!()</span> from `nom`</a></li>
+                    <li><a href="javascript:set_macro('named_attrs')"><span class="macro_name">named_attrs!()</span> from `nom`</a></li>
+                    <li><a href="javascript:set_macro('verify')"><span class="macro_name">verify!()</span> from `nom`</a></li>
+                    <li><a href="javascript:set_macro('hodor')"><span class="macro_name">HODOR!()</span>, an esolang</a></li>
+                </ul> </td>
+                </tr>
+                </table>
+                </div>
+                <div id="version_info" style="z-index: -1; margin-right: 15px"></div>
+            </div>
+            <div id="output"></div>
         </div>
     </body>
 </html>
