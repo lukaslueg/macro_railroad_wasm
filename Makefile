@@ -20,7 +20,7 @@ all: static/macro_railroad_wasm_bg.wasm static/macro_railroad_wasm.js static/ind
 
 .PHONY: serve
 serve: all
-	cd static && python -m http.server
+	cd static && python3 -m http.server
 
 .PHONY: clean
 clean:
