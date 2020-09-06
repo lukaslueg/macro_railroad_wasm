@@ -6,7 +6,10 @@ build = "build.rs"
 edition = "2018"
 
 [dependencies]
-wasm-bindgen = "0.2"
+# TODO wasm-bindgen >= 0.2.66 introduces code which `wasm-opt` 96
+# fails to validate, breaking the build. This is probably a bug
+# in `wasm-opt`, which we circumvent for now.
+wasm-bindgen = "=0.2.65"
 railroad = "0.1"
 macro_railroad = "0.1"
 htmlescape = "0.3"
