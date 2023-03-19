@@ -22,6 +22,8 @@ built = { version = "0.6", features=["chrono"], default_features=false }
 lto = true
 codegen-units = 1
 opt-level = "s"
+panic = "abort"
+incremental = false
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = ["-Oz", "--enable-mutable-globals"]
