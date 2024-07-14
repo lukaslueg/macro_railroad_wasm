@@ -11,7 +11,7 @@ pub fn version_info() -> String {
         "WASM-blob built {} on {} using {}",
         built_info::BUILT_TIME_UTC,
         built_info::RUSTC_VERSION,
-        built_info::DEPENDENCIES_STR
+        built_info::DIRECT_DEPENDENCIES_STR
     )
 }
 
@@ -39,7 +39,7 @@ Failed to parse, and I didn't even write an error-handler. Anyway:
 </div>
 "#,
             name,
-            (&diagram as &dyn railroad::RailroadNode).width(),
+            (&diagram as &dyn railroad::Node).width(),
             diagram
         ),
     }
@@ -51,8 +51,8 @@ fn to_diagram(
     ungroup: bool,
     foldcommontails: bool,
     legend: bool,
-) -> Result<(String, railroad::Diagram<Box<dyn railroad::RailroadNode>>), syn::parse::Error> {
-    let macro_rules = macro_railroad::parser::parse(&src)?;
+) -> Result<(String, railroad::Diagram<Box<dyn railroad::Node>>), syn::parse::Error> {
+    let macro_rules = macro_railroad::parser::parse(src)?;
 
     let mut tree = macro_railroad::lowering::MacroRules::from(macro_rules);
 

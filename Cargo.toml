@@ -7,16 +7,15 @@ edition = "2021"
 
 [dependencies]
 wasm-bindgen = "0.2"
-railroad = "0.1"
-macro_railroad = "0.1"
-htmlescape = "0.3"
-syn = { version = "2.0", default_features=false }
+railroad = "0.3.1"
+macro_railroad = "0.1.6"
+syn = { version = "2.0", default-features=false }
 
 [lib]
 crate-type = ["cdylib"]
 
 [build-dependencies]
-built = { version = "0.6", features=["chrono"], default_features=false }
+built = { version = "0.7", features=["chrono", "dependency-tree"], default-features=false }
 
 [profile.release]
 lto = true
