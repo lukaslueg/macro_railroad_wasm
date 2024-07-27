@@ -22,8 +22,9 @@ pub fn to_diagram_node(
     ungroup: bool,
     foldcommontails: bool,
     legend: bool,
+    bright: bool,
 ) -> String {
-    match to_diagram(src, hide_internal, ungroup, foldcommontails, legend) {
+    match to_diagram(src, hide_internal, ungroup, foldcommontails, legend, bright) {
         Err(e) => format!(
             r#"
 Failed to parse, and I didn't even write an error-handler. Anyway:
@@ -39,7 +40,7 @@ Failed to parse, and I didn't even write an error-handler. Anyway:
 </div>
 "#,
             name,
-            (&diagram as &dyn railroad::Node).width(),
+            (&diagram as &dyn macro_railroad::railroad::Node).width(),
             diagram
         ),
     }
@@ -51,7 +52,14 @@ fn to_diagram(
     ungroup: bool,
     foldcommontails: bool,
     legend: bool,
-) -> Result<(String, railroad::Diagram<Box<dyn railroad::Node>>), syn::parse::Error> {
+    bright: bool,
+) -> Result<
+    (
+        String,
+        macro_railroad::railroad::Diagram<Box<dyn macro_railroad::railroad::Node>>,
+    ),
+    macro_railroad::syn::parse::Error,
+> {
     let macro_rules = macro_railroad::parser::parse(src)?;
 
     let mut tree = macro_railroad::lowering::MacroRules::from(macro_rules);
@@ -74,8 +82,13 @@ fn to_diagram(
 
     let mut dia = macro_railroad::diagram::into_diagram(tree, legend);
 
-    dia.add_default_css();
-    macro_railroad::diagram::add_default_css(&mut dia);
+    let style = if bright {
+        macro_railroad::railroad::Stylesheet::Light
+    } else {
+        macro_railroad::railroad::Stylesheet::Dark
+    };
+    dia.add_stylesheet(&style);
+    macro_railroad::diagram::add_default_css(&mut dia, &style);
 
     Ok((name, dia))
 }

@@ -84,7 +84,8 @@
                     var opt_ungroup = !document.getElementById( "opt_ungroup" ).checked;
                     var opt_fold = document.getElementById( "opt_fold" ).checked;
                     var opt_legend = document.getElementById( "opt_legend" ).checked;
-                    var diagram = to_diagram_node( macro_text, opt_internal, opt_ungroup, opt_fold, opt_legend);
+                    var opt_bright = document.getElementById( "opt_bright" ).checked;
+                    var diagram = to_diagram_node( macro_text, opt_internal, opt_ungroup, opt_fold, opt_legend, opt_bright);
                     document.getElementById( "output" ).innerHTML = diagram;
                 }
 
@@ -95,6 +96,7 @@
                 document.getElementById( "opt_ungroup" ).addEventListener( "change", function( event ) { update_output(); });
                 document.getElementById( "opt_fold" ).addEventListener( "change", function( event ) { update_output(); });
                 document.getElementById( "opt_legend" ).addEventListener( "change", function( event ) { update_output(); });
+                document.getElementById( "opt_bright" ).addEventListener( "change", function( event ) { update_output(); });
 
                 var urlParams = new URLSearchParams(location.search);
                 if (urlParams.get("m") !== null) {
@@ -309,9 +311,11 @@
                 <input type="checkbox" id="opt_ungroup" checked>
                 <label for="opt_ungroup">Preserve groups</label>
                 <input type="checkbox" id="opt_fold" checked>
-                <label for="opt_fold">Optimize layout by folding common sections</label>
+                <label for="opt_fold">Optimize layout</label>
                 <input type="checkbox" id="opt_legend" checked>
                 <label for="opt_legend">Create legend</label>
+                <input type="checkbox" id="opt_bright" checked>
+                <label for="opt_bright">Bright layout</label>
             </div>
 
             <div id="copytext">
