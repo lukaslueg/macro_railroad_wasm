@@ -23,4 +23,4 @@ panic = "abort"
 incremental = false
 
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ["-Oz", "--enable-mutable-globals"]
+wasm-opt = ["-Oz", "--enable-mutable-globals", "--enable-bulk-memory"]
