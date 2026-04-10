@@ -1,355 +1,112 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Syntax diagram generator</title>
-        <style type="text/css">
-        svg.railroad {
-            border: 1px solid;
-        }
+<head>
+    <meta charset="utf-8">
+    <title>macro_railroad — Syntax Diagram Generator</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/mode-rust.min.js"></script>
+    <script type="module" src="main.js"></script>
+</head>
+<body>
+    <div class="app-container">
 
-        body {
-            margin: 0px;
-        }
+        <header class="app-header">
+            <span class="app-title">macro_railroad</span>
+            <a class="github-link" href="https://github.com/lukaslueg/macro_railroad" target="_blank" rel="noopener noreferrer">
+                <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                </svg>
+                Fork me on GitHub
+            </a>
+            <button class="btn btn-secondary" id="copy-svg">Copy SVG</button>
+            <button class="btn btn-secondary" id="toggle-options">
+                <span id="toggle-options-label">Hide Options</span>
+            </button>
+            <button class="theme-toggle btn btn-secondary" id="theme-toggle">
+                <span id="theme-toggle-label">Dark mode</span>
+            </button>
+        </header>
 
-        div#content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 2fr;
-            grid-gap: 10px;
-            height: 100vh;
-        }
-
-        div#input {
-            grid-column: 1;
-            grid-row: 1;
-            margin-top: 15px;
-            margin-left: 15px;
-        }
-
-        textarea#macro_text {
-            resize: none;
-            width: 100%;
-            white-space: pre;
-            overflow: auto;
-            background-color: darkslategray;
-            color: moccasin;
-            font-family: monospace, monospace;
-			font-size: 9pt;
-        }
-
-        div#copytext {
-            position: relative;
-            margin-left: 10px;
-            grid-column: 2;
-            grid-row: 1;
-            font-size: 11pt;
-        }
-
-        div#output {
-            border-top: 1px solid;
-            grid-column: 1 / span 2;
-            grid-row: 2;
-            margin: 0 15px 0 15px;
-        }
-
-        span.macro_name {
-            font-style: italic;
-            font-decoration: underline;
-            font-family: monospace, monospace;
-			font-size: smaller;
-        }
-
-        div#version_info {
-            position: absolute;
-            bottom: 0;
-            color: dimgray;
-            font-family: monospace, monospace;
-            font-size: 6pt;
-        }
-
-        </style>
-    </head>
-    <body>
-            <script type="module">
-            import init, { version_info, to_diagram_node } from './macro_railroad_wasm.js';
-
-            async function run() {
-                await init();
-                console.log(version_info());
-
-                function update_output() {
-                    var macro_text = document.getElementById( "macro_text" ).value;
-                    var opt_internal = document.getElementById( "opt_internal" ).checked;
-                    var opt_ungroup = !document.getElementById( "opt_ungroup" ).checked;
-                    var opt_fold = document.getElementById( "opt_fold" ).checked;
-                    var opt_legend = document.getElementById( "opt_legend" ).checked;
-                    var opt_bright = document.getElementById( "opt_bright" ).checked;
-                    var diagram = to_diagram_node( macro_text, opt_internal, opt_ungroup, opt_fold, opt_legend, opt_bright);
-                    document.getElementById( "output" ).innerHTML = diagram;
-                }
-
-                document.getElementById( "version_info" ).innerText = version_info();
-
-                document.getElementById( "macro_text" ).addEventListener( "keyup", function( event ) { update_output(); });
-                document.getElementById( "opt_internal" ).addEventListener( "change", function( event ) { update_output(); });
-                document.getElementById( "opt_ungroup" ).addEventListener( "change", function( event ) { update_output(); });
-                document.getElementById( "opt_fold" ).addEventListener( "change", function( event ) { update_output(); });
-                document.getElementById( "opt_legend" ).addEventListener( "change", function( event ) { update_output(); });
-                document.getElementById( "opt_bright" ).addEventListener( "change", function( event ) { update_output(); });
-
-                var urlParams = new URLSearchParams(location.search);
-                if (urlParams.get("m") !== null) {
-                    document.getElementById("macro_text").value = urlParams.get("m");
-                }
-                window.update_output = update_output;
-                update_output();
-            }
-
-            run();
-                function set_macro(macro_name) {
-                    var macro_text = document.getElementById( "macro_text" );
-                    if (macro_name === 'gfxdefines') {
-						macro_text.value = `macro_rules! gfx_defines {
-    ($(#[$attr:meta])* vertex $name:ident {
-            $( $(#[$field_attr:meta])* $field:ident : $ty:ty = $e:expr, )+
-    }) => { ... };
-    ($(#[$attr:meta])* constant $name:ident {
-            $( $(#[$field_attr:meta])* $field:ident : $ty:ty = $e:expr, )+
-    }) => { ... };
-    (pipeline $name:ident {
-            $( $field:ident : $ty:ty = $e:expr, )+
-    }) => { ... };
-    ($(#[$attr:meta])* vertex $name:ident {
-            $( $(#[$field_attr:meta])* $field:ident : $ty:ty = $e:expr, )+
-    } $($tail:tt)+) => { ... };
-    ($(#[$attr:meta])* constant $name:ident {
-            $( $(#[$field_attr:meta])* $field:ident : $ty:ty = $e:expr, )+
-    } $($tail:tt)+) => { ... };
-    ($keyword:ident $name:ident {
-            $( $field:ident : $ty:ty = $e:expr, )+
-    } $($tail:tt)+) => { ... };
-}`;
-                    } else if ( macro_name === "panic" ) {
-                        macro_text.value = `macro_rules! panic {
-    () => { ... };
-    ($msg:expr) => { ... };
-    ($msg:expr,) => { ... };
-    ($fmt:expr, $($arg:tt)+) => { ... };
-}`;
-                    } else if ( macro_name === "cond_reduce" ) {
-                        macro_text.value = `macro_rules! cond_reduce {
-    ($i:expr, $cond:expr, $submac:ident!( $($args:tt)* )) => { ... };
-    ($i:expr, $cond:expr) => { ... };
-    ($i:expr, $cond:expr, $f:expr) => { ... };
-}`;
-                    } else if ( macro_name === "method" ) {
-                        macro_text.value = `macro_rules! method {
-    ($name:ident<$a:ty>( $i:ty ) -> $o:ty, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty,$i:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty>( $i:ty ) -> $o:ty, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty,$i:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty,$o:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty>, $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty>( $i:ty ) -> $o:ty, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty,$i:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    ($name:ident<$a:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty>( $i:ty ) -> $o:ty, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty,$i:ty,$o:ty,$e:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty,$i:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty,$o:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-    (pub $name:ident<$a:ty>, mut $self_:ident, $submac:ident!( $($args:tt)* )) => { ... };
-}`;
-                    } else if ( macro_name === "sep" ) {
-                        macro_text.value = `macro_rules! sep {
-    ($i:expr,  $separator:path, tuple ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, pair ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, delimited ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, separated_pair ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, preceded ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, terminated ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, do_parse ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, permutation ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, alt ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, alt_complete ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, switch ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, separated_list ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, many0 ! ($($rest:tt)*) ) => { ... };
-    ($i:expr,  $separator:path, many1 ! ($($rest:tt)*) ) => { ... };
-    ($i:expr, $separator:path, return_error!( $($rest:tt)* )) => { ... };
-    ($i:expr, $separator:path, $submac:ident!( $($rest:tt)* )) => { ... };
-    ($i:expr, $separator:path, $f:expr) => { ... };
-}`;
-                    } else if ( macro_name === "named_attrs" ) {
-						macro_text.value = `macro_rules! named_args {
-    (pub $func_name:ident ( $( $arg:ident : $typ:ty ),* ) < $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-    (pub $func_name:ident < 'a > ( $( $arg:ident : $typ:ty ),* ) < $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-    ($func_name:ident ( $( $arg:ident : $typ:ty ),* ) < $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-    ($func_name:ident < 'a > ( $( $arg:ident : $typ:ty ),* ) < $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-    (pub $func_name:ident ( $( $arg:ident : $typ:ty ),* ) < $input_type:ty, $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-    ($func_name:ident ( $( $arg:ident : $typ:ty ),* ) < $input_type:ty, $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-    (pub $func_name:ident < 'a > ( $( $arg:ident : $typ:ty ),* ) < $input_type:ty, $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-    ($func_name:ident < 'a > ( $( $arg:ident : $typ:ty ),* ) < $input_type:ty, $return_type:ty > , $submac:ident!( $($args:tt)* ) ) => { ... };
-}`;
-					} else if ( macro_name === "verify" ) {
-						macro_text.value = `macro_rules! verify {
-    (__impl $i:expr, $submac:ident!( $($args:tt)* ), $submac2:ident!( $($args2:tt)* )) => { ... };
-    ($i:expr, $submac:ident!( $($args:tt)* ), $g:expr) => { ... };
-    ($i:expr, $submac:ident!( $($args:tt)* ), $submac2:ident!( $($args2:tt)* )) => { ... };
-    ($i:expr, $f:expr, $g:expr) => { ... };
-    ($i:expr, $f:expr, $submac:ident!( $($args:tt)* )) => { ... };
-}`;
-                    } else if ( macro_name === "cfg_if" ) {
-                        macro_text.value = `macro_rules! cfg_if {
-    ($(
-        if #[cfg($($meta:meta),*)] { $($it:item)* }
-    ) else * else {
-        $($it2:item)*
-    }) => { ... };
-    (
-        if #[cfg($($i_met:meta),*)] { $($i_it:item)* }
-        $(
-            else if #[cfg($($e_met:meta),*)] { $($e_it:item)* }
-        )*
-    ) => { ... };
-    (@__items ($($not:meta,)*) ; ) => { ... };
-    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($it:item)*) ), $($rest:tt)*) => { ... };
-    (@__apply $m:meta, $($it:item)*) => { ... };
-}`;
-                    } else if ( macro_name === "bitflags" ) {
-                        macro_text.value = `macro_rules! bitflags {
-    (
-        $(#[$outer:meta])*
-        pub struct $BitFlags:ident: $T:ty {
-            $(
-                $(#[$inner:ident $($args:tt)*])*
-                const $Flag:ident = $value:expr;
-            )+
-        }
-    ) => { ... };
-    (
-        $(#[$outer:meta])*
-        struct $BitFlags:ident: $T:ty {
-            $(
-                $(#[$inner:ident $($args:tt)*])*
-                const $Flag:ident = $value:expr;
-            )+
-        }
-    ) => { ... };
-    (
-        $(#[$outer:meta])*
-        pub ($($vis:tt)+) struct $BitFlags:ident: $T:ty {
-            $(
-                $(#[$inner:ident $($args:tt)*])*
-                const $Flag:ident = $value:expr;
-            )+
-        }
-    ) => { ... };
-}`;
-                    } else if ( macro_name === "hodor" ) {
-                        macro_text.value = `macro_rules! HODOR {
- ($ptr:ident; $vec:ident;) => {};
- ($ptr:ident; $vec:ident;  HODOR.  HODOR? $($x:tt)*) => {
-    $ptr+=1;
-    HODOR!($ptr; $vec; $($x)*);
- };
-
- ($ptr:ident; $vec:ident;  HODOR?  HODOR. $($x:tt)*) => {
-    $ptr-=1;
-    HODOR!($ptr; $vec; $($x)*);
- };
-
- ($ptr:ident; $vec:ident;  HODOR.  HODOR. $($x:tt)*) => {
-    $vec[$ptr]+=1;
-    HODOR!($ptr; $vec; $($x)*);
- };
-
- ($ptr:ident; $vec:ident;  HODOR!  HODOR! $($x:tt)*) => {
-    $vec[$ptr]-=1;
-    HODOR!($ptr; $vec; $($x)*);
- };
-
- ($ptr:ident; $vec:ident;  HODOR!  HODOR. $($x:tt)*) => {
-    print($vec[$ptr]);
-    HODOR!($ptr; $vec; $($x)*);
- };
-
- ($ptr:ident; $vec:ident;  HODOR.  HODOR! $($x:tt)*) => {
-    $vec[$ptr] = input();
-    HODOR!($ptr; $vec; $($x)*);
- };
-
- ($ptr:ident; $vec:ident; [ $($inner:tt)* ] $($x:tt)*) => {
-    while $vec[$ptr] != 0 {
-       HODOR!($ptr; $vec; $($inner)*) ;
-    }
-    HODOR!($ptr; $vec; $($x)+)
- };
-}`;
-                    }
-                    update_output();
-                }
-                window.set_macro = set_macro;
-            </script>
-        <div id="content">
-            <div id="input">
-                <textarea rows="25" name="macro_text" id="macro_text" data-gramm_editor="false">macro_rules! named {
-    ($name:ident -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-    (pub $name:ident -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-    ($name:ident($($params:tt)*) -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-    (pub $name:ident($($params:tt)*) -&gt; $o:ty, $submac:ident!( $($args:tt)* )) =&gt; { ... };
-}</textarea>
-                <br>
-                <input type="checkbox" id="opt_internal" checked>
-                <label for="opt_internal">Hide macro-internal rules</label>
-                <input type="checkbox" id="opt_ungroup" checked>
-                <label for="opt_ungroup">Preserve groups</label>
-                <input type="checkbox" id="opt_fold" checked>
-                <label for="opt_fold">Optimize layout</label>
-                <input type="checkbox" id="opt_legend" checked>
-                <label for="opt_legend">Create legend</label>
-                <input type="checkbox" id="opt_bright" checked>
-                <label for="opt_bright">Bright layout</label>
-            </div>
-
-            <div id="copytext">
-                <a href="https://github.com/lukaslueg/macro_railroad">
-                    <img style="float: right" src="forkme.svg" width="120" height="120" alt="Fork me!">
-                </a>
-                <div style="margin-top: 15px; margin-right: 15px; background-color: white;">
-                This is a demonstration of a pure-rust library to generate <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/syntaxdiagrams.html">syntax diagrams</a> for <span class="macro_name">macro_rules!()</span>.<br><br>Diagrams are generated fully automatically from rust-source as Scalable Vector Graphics, using customizable CSS for layout.<br><br>
-
-                <span style="font-weight: bold">Paste a <span class="macro_name">macro_rules!()</span>-block into the text-area on the left</span>; modify them as you wish. A wasm-blob will generate a syntax-diagram as an SVG in the area below.<br>If you found a bug, a quirk or a macro that doesn't parse but should, please report it liberally.<br>
-
-
-                <br>Here are some examples:
-                <table> <tr>
-                <td style="padding-right: 15px"> <ul>
-                    <li><a href="javascript:set_macro('bitflags')"><span class="macro_name">bitflags!()</span> from the `bitflags`-crate</a></li>
-                    <li><a href="javascript:set_macro('cond_reduce')"><span class="macro_name">cond_reduce!()</span> from `syn`</a></li>
-                    <li><a href="javascript:set_macro('method')"><span class="macro_name">method!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('cfg_if')"><span class="macro_name">cfg_if!()</span> from `cfg-if`</a></li>
-                    <li><a href="javascript:set_macro('panic')"><span class="macro_name">panic!()</span> from the standard library</a></li>
-                </ul> </td>
-                <td style="vertical-align: top"> <ul>
-                    <li><a href="javascript:set_macro('gfxdefines')"><span class="macro_name">gfx_defines!()</span> from `gfx-rs`</a></li>
-                    <li><a href="javascript:set_macro('sep')"><span class="macro_name">sep!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('named_attrs')"><span class="macro_name">named_attrs!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('verify')"><span class="macro_name">verify!()</span> from `nom`</a></li>
-                    <li><a href="javascript:set_macro('hodor')"><span class="macro_name">HODOR!()</span>, an esolang</a></li>
-                </ul> </td>
-                </tr>
-                </table>
+        <main class="main-content">
+            <div class="editor-area">
+                <div class="editor-panel">
+                    <h3>Input</h3>
                 </div>
-                <div id="version_info" style="z-index: -1; margin-right: 15px"></div>
+                <div id="ace-editor"></div>
             </div>
-            <div id="output"></div>
-        </div>
-    </body>
+            <div class="diagram-area">
+                <div id="output"></div>
+            </div>
+        </main>
+
+        <aside class="options-panel">
+            <h3>Options</h3>
+            <div class="option-item">
+                <label class="option-label" for="editor-theme">Editor Theme</label>
+                <select id="editor-theme" class="theme-select">
+                    <optgroup label="Light">
+                        <option value="ace/theme/github">GitHub</option>
+                        <option value="ace/theme/chrome">Chrome</option>
+                        <option value="ace/theme/eclipse">Eclipse</option>
+                        <option value="ace/theme/solarized_light">Solarized Light</option>
+                    </optgroup>
+                    <optgroup label="Dark">
+                        <option value="ace/theme/twilight">Twilight</option>
+                        <option value="ace/theme/monokai">Monokai</option>
+                        <option value="ace/theme/tomorrow_night">Tomorrow Night</option>
+                        <option value="ace/theme/solarized_dark">Solarized Dark</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="option-item">
+                <div class="checkbox-wrapper">
+                    <label class="option-label" for="opt_hide_internal">Hide macro-internal rules</label>
+                    <input type="checkbox" id="opt_hide_internal" checked>
+                </div>
+            </div>
+            <div class="option-item">
+                <div class="checkbox-wrapper">
+                    <label class="option-label" for="opt_preserve_groups">Preserve groups</label>
+                    <input type="checkbox" id="opt_preserve_groups" checked>
+                </div>
+            </div>
+            <div class="option-item">
+                <div class="checkbox-wrapper">
+                    <label class="option-label" for="opt_fold_common_tails">Optimize layout</label>
+                    <input type="checkbox" id="opt_fold_common_tails" checked>
+                </div>
+            </div>
+            <div class="option-item">
+                <div class="checkbox-wrapper">
+                    <label class="option-label" for="opt_show_legend">Create legend</label>
+                    <input type="checkbox" id="opt_show_legend" checked>
+                </div>
+            </div>
+            <div class="option-item">
+                <div class="checkbox-wrapper">
+                    <label class="option-label" for="opt_bright">Bright diagram</label>
+                    <input type="checkbox" id="opt_bright" checked>
+                </div>
+            </div>
+
+            <h3>Examples</h3>
+            <ul class="example-list">
+                <li><a href="#" data-macro="panic">panic!()</a></li>
+                <li><a href="#" data-macro="bitflags">bitflags!()</a></li>
+                <li><a href="#" data-macro="cfg_if">cfg_if!()</a></li>
+                <li><a href="#" data-macro="gfxdefines">gfx_defines!()</a></li>
+                <li><a href="#" data-macro="sep">sep!()</a></li>
+                <li><a href="#" data-macro="method">method!()</a></li>
+                <li><a href="#" data-macro="cond_reduce">cond_reduce!()</a></li>
+                <li><a href="#" data-macro="named_attrs">named_args!()</a></li>
+                <li><a href="#" data-macro="verify">verify!()</a></li>
+                <li><a href="#" data-macro="hodor">HODOR!()</a></li>
+            </ul>
+
+            <div class="version-info" id="version-info"></div>
+        </aside>
+
+    </div>
+</body>
 </html>

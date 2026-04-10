@@ -1,4 +1,6 @@
 /target
 **/*.rs.bk
 static/macro_railroad_wasm.js
+static/macro_railroad_wasm.d.ts
 static/macro_railroad_wasm_bg.wasm
+static/macro_railroad_wasm_bg.wasm.d.ts
