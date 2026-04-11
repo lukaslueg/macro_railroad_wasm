@@ -73,7 +73,6 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    gap: 16px;
     overflow: hidden;
 }
 
@@ -154,6 +153,8 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    flex: 0 0 auto;
+    min-height: 160px;
 }
 
 .editor-panel {
@@ -170,14 +171,39 @@ body {
 }
 
 #ace-editor {
-    height: 350px;
+    flex: 1 1 auto;
+    min-height: 0;
     font-family: 'SF Mono', 'Fira Code', 'Monaco', monospace;
+}
+
+.resize-handle {
+    flex: 0 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: row-resize;
+    user-select: none;
+    touch-action: none;
+}
+
+.resize-handle::before {
+    content: '';
+    width: 56px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--border-color);
+    transition: background 0.1s ease;
+}
+
+.resize-handle:hover::before,
+.resize-handle:focus-visible::before {
+    background: var(--accent-color);
 }
 
 
 /* Diagram Area */
 .diagram-area {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
@@ -185,6 +211,12 @@ body {
     padding: 16px;
     overflow: auto;
     position: relative;
+}
+
+body.is-resizing,
+body.is-resizing * {
+    cursor: row-resize !important;
+    user-select: none;
 }
 
 #output {
@@ -351,6 +383,10 @@ body {
 
     .main-content {
         min-height: 600px;
+    }
+
+    .editor-area {
+        min-height: 140px;
     }
 
     .options-panel {
