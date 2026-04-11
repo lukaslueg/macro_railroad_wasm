@@ -190,6 +190,8 @@ const EDITOR_HEIGHT_STORAGE_KEY = 'macro-railroad-editor-height';
 const DEFAULT_EDITOR_HEIGHT = 350;
 const MIN_EDITOR_HEIGHT = 160;
 const MIN_DIAGRAM_HEIGHT = 200;
+const LIGHT_EDITOR_THEME = 'ace/theme/github';
+const DARK_EDITOR_THEME = 'ace/theme/twilight';
 
 let aceEditor = null;
 let wasmReady = false;
@@ -297,7 +299,7 @@ function initAceEditor() {
     ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/');
 
     const savedTheme = localStorage.getItem('macro-railroad-editor-theme')
-        || (currentTheme === 'dark' ? 'ace/theme/twilight' : 'ace/theme/github');
+        || (currentTheme === 'dark' ? DARK_EDITOR_THEME : LIGHT_EDITOR_THEME);
 
     restoreEditorHeight();
     aceEditor = ace.edit('ace-editor', {
@@ -325,17 +327,26 @@ function updateThemeToggleLabel() {
     if (label) label.textContent = currentTheme === 'dark' ? 'Light mode' : 'Dark mode';
 }
 
+function getPreferredPageTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 function restoreTheme() {
-    const saved = localStorage.getItem('macro-railroad-theme') || 'light';
-    currentTheme = saved;
-    document.documentElement.setAttribute('data-theme', saved === 'dark' ? 'dark' : '');
+    currentTheme = localStorage.getItem('macro-railroad-theme') || getPreferredPageTheme();
+    document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'dark' : '');
     updateThemeToggleLabel();
 }
 
 function handleThemeToggle() {
     currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    const editorTheme = currentTheme === 'dark' ? DARK_EDITOR_THEME : LIGHT_EDITOR_THEME;
     document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'dark' : '');
     localStorage.setItem('macro-railroad-theme', currentTheme);
+    localStorage.setItem('macro-railroad-editor-theme', editorTheme);
+    if (aceEditor) {
+        aceEditor.setTheme(editorTheme);
+    }
+    document.getElementById('editor-theme').value = editorTheme;
     // Sync opt_bright to match page theme: light page → bright diagrams
     document.getElementById('opt_bright').checked = currentTheme === 'light';
     updateThemeToggleLabel();
