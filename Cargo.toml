@@ -13,7 +13,7 @@ macro_railroad = "0.1.7"
 crate-type = ["cdylib"]
 
 [build-dependencies]
-built = { version = "0.7", features=["chrono", "dependency-tree"], default-features=false }
+built = { version = "0.8", features=["chrono", "dependency-tree"], default-features=false }
 
 [profile.release]
 lto = true
