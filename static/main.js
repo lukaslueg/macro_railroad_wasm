@@ -198,10 +198,86 @@ let wasmReady = false;
 let currentTheme = 'light';
 let editorResizeState = null;
 
+// Diagram viewport state (zoom + pan)
+const ZOOM_MIN = 0.1;
+const ZOOM_MAX = 5;
+const ZOOM_STEP = 0.25;
+const ZOOM_WHEEL_FACTOR = 0.001;
+let viewZoom = 1;
+let viewPanX = 0;
+let viewPanY = 0;
+let panState = null;
+
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+function applyViewTransform() {
+    const output = document.getElementById('output');
+    output.style.transform = `translate(${viewPanX}px, ${viewPanY}px) scale(${viewZoom})`;
+}
+
+function resetView() {
+    viewZoom = 1;
+    viewPanX = 0;
+    viewPanY = 0;
+    applyViewTransform();
+}
+
+function zoomBy(delta, centerX, centerY) {
+    const oldZoom = viewZoom;
+    viewZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, viewZoom + delta));
+    if (centerX !== undefined && centerY !== undefined) {
+        // Adjust pan so the point under the cursor stays fixed
+        const ratio = viewZoom / oldZoom;
+        viewPanX = centerX - ratio * (centerX - viewPanX);
+        viewPanY = centerY - ratio * (centerY - viewPanY);
+    }
+    applyViewTransform();
+}
+
+function handleDiagramPointerDown(event) {
+    if (panState || event.button !== 0) return;
+    // Don't pan when clicking nav buttons
+    if (event.target.closest('.diagram-nav')) return;
+    event.preventDefault();
+    const area = document.getElementById('diagram-area');
+    const pointerId = event.pointerId;
+    const onMove = e => {
+        viewPanX += e.clientX - panState.lastX;
+        viewPanY += e.clientY - panState.lastY;
+        panState.lastX = e.clientX;
+        panState.lastY = e.clientY;
+        applyViewTransform();
+    };
+    const onUp = () => {
+        area.classList.remove('is-panning');
+        if (area.hasPointerCapture(pointerId)) {
+            area.releasePointerCapture(pointerId);
+        }
+        area.removeEventListener('pointermove', onMove);
+        area.removeEventListener('pointerup', onUp);
+        area.removeEventListener('pointercancel', onUp);
+        panState = null;
+    };
+    panState = { lastX: event.clientX, lastY: event.clientY };
+    area.classList.add('is-panning');
+    area.setPointerCapture(pointerId);
+    area.addEventListener('pointermove', onMove);
+    area.addEventListener('pointerup', onUp);
+    area.addEventListener('pointercancel', onUp);
+}
+
+function handleDiagramWheel(event) {
+    event.preventDefault();
+    const area = document.getElementById('diagram-area');
+    const rect = area.getBoundingClientRect();
+    const cursorX = event.clientX - rect.left;
+    const cursorY = event.clientY - rect.top;
+    const delta = -event.deltaY * ZOOM_WHEEL_FACTOR * viewZoom;
+    zoomBy(delta, cursorX, cursorY);
 }
 
 function updateDiagram() {
@@ -220,6 +296,7 @@ function updateDiagram() {
         document.getElementById('output').innerHTML =
             `<div class="error-text">Parse error:\n${escapeHtml(String(err))}</div>`;
     }
+    resetView();
 }
 
 function getEditorResizeElements() {
@@ -409,6 +486,14 @@ function wireEvents() {
         const text = MACROS[link.dataset.macro];
         if (text) aceEditor.setValue(text, -1);
     });
+    // Diagram viewport: zoom + pan
+    const diagramArea = document.getElementById('diagram-area');
+    diagramArea.addEventListener('pointerdown', handleDiagramPointerDown);
+    diagramArea.addEventListener('wheel', handleDiagramWheel, { passive: false });
+    document.getElementById('zoom-in').addEventListener('click', () => zoomBy(ZOOM_STEP));
+    document.getElementById('zoom-out').addEventListener('click', () => zoomBy(-ZOOM_STEP));
+    document.getElementById('zoom-reset').addEventListener('click', resetView);
+
     window.addEventListener('resize', handleWindowResize);
 }
 

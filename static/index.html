@@ -42,8 +42,13 @@
                 aria-label="Resize input area"
                 aria-orientation="horizontal"
             ></div>
-            <div class="diagram-area">
+            <div class="diagram-area" id="diagram-area">
                 <div id="output"></div>
+                <div class="diagram-nav">
+                    <button class="diagram-nav-btn" id="zoom-in" title="Zoom in">+</button>
+                    <button class="diagram-nav-btn" id="zoom-out" title="Zoom out">&minus;</button>
+                    <button class="diagram-nav-btn diagram-nav-btn-label" id="zoom-reset" title="Reset view">Reset</button>
+                </div>
             </div>
         </main>
 
