@@ -459,11 +459,60 @@ function handleUrlParam() {
 
 async function handleCopySvg() {
     const svg = document.querySelector('#output svg');
-    if (!svg) return;
+    if (!svg) {
+        showToast('No diagram to copy — fix the macro syntax first');
+        return;
+    }
     await navigator.clipboard.writeText(svg.outerHTML);
     const btn = document.getElementById('copy-svg');
     btn.textContent = 'Copied!';
     setTimeout(() => { btn.textContent = 'Copy SVG'; }, 1500);
+}
+
+function showToast(message) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function handleSavePng() {
+    const svg = document.querySelector('#output svg');
+    if (!svg) {
+        showToast('No diagram to export — fix the macro syntax first');
+        return;
+    }
+    const scale = 2;
+    const svgWidth = svg.getAttribute('width') || svg.getBoundingClientRect().width;
+    const svgHeight = svg.getAttribute('height') || svg.getBoundingClientRect().height;
+    const w = parseFloat(svgWidth) * scale;
+    const h = parseFloat(svgHeight) * scale;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(pngBlob => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(pngBlob);
+            const h3 = document.querySelector('#output h3');
+            const backtickMatch = h3 && h3.textContent.match(/`([^`]+)`/);
+            const macroName = backtickMatch ? backtickMatch[1] : 'macro_railroad';
+            a.download = `${macroName}.png`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }, 'image/png');
+    };
+    img.src = url;
 }
 
 function wireEvents() {
@@ -471,6 +520,7 @@ function wireEvents() {
         document.getElementById(id).addEventListener('change', updateDiagram);
     }
     document.getElementById('copy-svg').addEventListener('click', handleCopySvg);
+    document.getElementById('save-png').addEventListener('click', handleSavePng);
     document.getElementById('theme-toggle').addEventListener('click', handleThemeToggle);
     document.getElementById('toggle-options').addEventListener('click', handleToggleOptions);
     document.getElementById('editor-resize-handle').addEventListener('pointerdown', startEditorResize);
