@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 wasm-bindgen = "0.2"
-macro_railroad = "0.1.7"
+macro_railroad = "0.1.9"
 
 [lib]
 crate-type = ["cdylib"]
