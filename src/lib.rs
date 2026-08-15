@@ -22,9 +22,16 @@ pub fn to_diagram_node(
     ungroup: bool,
     foldcommontails: bool,
     legend: bool,
-    bright: bool,
+    render_theme: &str,
 ) -> String {
-    match to_diagram(src, hide_internal, ungroup, foldcommontails, legend, bright) {
+    match to_diagram(
+        src,
+        hide_internal,
+        ungroup,
+        foldcommontails,
+        legend,
+        render_theme,
+    ) {
         Err(e) => format!(
             r#"
 Failed to parse, and I didn't even write an error-handler. Anyway:
@@ -52,7 +59,7 @@ fn to_diagram(
     ungroup: bool,
     foldcommontails: bool,
     legend: bool,
-    bright: bool,
+    render_theme: &str,
 ) -> Result<
     (
         String,
@@ -82,10 +89,13 @@ fn to_diagram(
 
     let mut dia = macro_railroad::diagram::into_diagram(tree, legend);
 
-    let style = if bright {
-        macro_railroad::railroad::Stylesheet::Light
-    } else {
-        macro_railroad::railroad::Stylesheet::Dark
+    let style = match render_theme {
+        "dark" => macro_railroad::railroad::Stylesheet::Dark,
+        "rust" => macro_railroad::railroad::Stylesheet::Rust,
+        "coal" => macro_railroad::railroad::Stylesheet::Coal,
+        "navy" => macro_railroad::railroad::Stylesheet::Navy,
+        "ayu" => macro_railroad::railroad::Stylesheet::Ayu,
+        _ => macro_railroad::railroad::Stylesheet::Light,
     };
     dia.add_stylesheet(&style);
     macro_railroad::diagram::add_default_css(&mut dia, &style);

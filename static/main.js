@@ -440,6 +440,23 @@ const MIN_EDITOR_HEIGHT = 160;
 const MIN_DIAGRAM_HEIGHT = 200;
 const LIGHT_EDITOR_THEME = 'ace/theme/github';
 const DARK_EDITOR_THEME = 'ace/theme/twilight';
+const PAGE_THEME_STORAGE_KEY = 'macro-railroad-theme';
+const RENDER_THEME_STORAGE_KEY = 'macro-railroad-render-theme';
+const RENDER_THEMES = new Set(['light', 'dark', 'rust', 'coal', 'navy', 'ayu']);
+const LIGHT_EDITOR_THEMES = new Set([
+    'ace/theme/github',
+    'ace/theme/chrome',
+    'ace/theme/eclipse',
+    'ace/theme/solarized_light',
+]);
+const DARK_EDITOR_THEMES = new Set([
+    'ace/theme/twilight',
+    'ace/theme/monokai',
+    'ace/theme/tomorrow_night',
+    'ace/theme/solarized_dark',
+]);
+const LIGHT_RENDER_THEMES = new Set(['light', 'rust']);
+const DARK_RENDER_THEMES = new Set(['dark', 'coal', 'navy', 'ayu']);
 
 let aceEditor = null;
 let wasmReady = false;
@@ -535,10 +552,10 @@ function updateDiagram() {
     const preserveGroups = document.getElementById('opt_preserve_groups').checked;
     const foldCommonTails = document.getElementById('opt_fold_common_tails').checked;
     const showLegend = document.getElementById('opt_show_legend').checked;
-    const isBright = document.getElementById('opt_bright').checked;
+    const renderTheme = document.getElementById('render-theme').value;
     try {
         document.getElementById('output').innerHTML = to_diagram_node(
-            src, hideInternal, !preserveGroups, foldCommonTails, showLegend, isBright
+            src, hideInternal, !preserveGroups, foldCommonTails, showLegend, renderTheme
         );
     } catch (err) {
         document.getElementById('output').innerHTML =
@@ -647,35 +664,48 @@ function initAceEditor() {
     document.getElementById('editor-theme').value = savedTheme;
 }
 
-function updateThemeToggleLabel() {
-    const label = document.getElementById('theme-toggle-label');
-    if (label) label.textContent = currentTheme === 'dark' ? 'Light mode' : 'Dark mode';
-}
-
 function getPreferredPageTheme() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function restoreTheme() {
-    currentTheme = localStorage.getItem('macro-railroad-theme') || getPreferredPageTheme();
-    document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'dark' : '');
-    updateThemeToggleLabel();
+function setPageTheme(theme, persist = true) {
+    currentTheme = theme;
+    document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
+    if (persist) {
+        localStorage.setItem(PAGE_THEME_STORAGE_KEY, theme);
+    }
 }
 
-function handleThemeToggle() {
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    const editorTheme = currentTheme === 'dark' ? DARK_EDITOR_THEME : LIGHT_EDITOR_THEME;
-    document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'dark' : '');
-    localStorage.setItem('macro-railroad-theme', currentTheme);
-    localStorage.setItem('macro-railroad-editor-theme', editorTheme);
-    if (aceEditor) {
-        aceEditor.setTheme(editorTheme);
+function restoreTheme() {
+    const savedTheme = localStorage.getItem(PAGE_THEME_STORAGE_KEY);
+    setPageTheme(savedTheme === 'light' || savedTheme === 'dark'
+        ? savedTheme
+        : getPreferredPageTheme(), false);
+}
+
+function restoreRenderTheme() {
+    const savedTheme = localStorage.getItem(RENDER_THEME_STORAGE_KEY);
+    const renderTheme = RENDER_THEMES.has(savedTheme)
+        ? savedTheme
+        : (currentTheme === 'dark' ? 'dark' : 'light');
+    document.getElementById('render-theme').value = renderTheme;
+}
+
+function getThemeKind(theme, lightThemes, darkThemes) {
+    if (lightThemes.has(theme)) return 'light';
+    if (darkThemes.has(theme)) return 'dark';
+    return null;
+}
+
+function syncPageTheme() {
+    const editorTheme = document.getElementById('editor-theme').value;
+    const renderTheme = document.getElementById('render-theme').value;
+    const editorKind = getThemeKind(editorTheme, LIGHT_EDITOR_THEMES, DARK_EDITOR_THEMES);
+    const renderKind = getThemeKind(renderTheme, LIGHT_RENDER_THEMES, DARK_RENDER_THEMES);
+
+    if (editorKind && editorKind === renderKind) {
+        setPageTheme(editorKind);
     }
-    document.getElementById('editor-theme').value = editorTheme;
-    // Sync opt_bright to match page theme: light page → bright diagrams
-    document.getElementById('opt_bright').checked = currentTheme === 'light';
-    updateThemeToggleLabel();
-    updateDiagram();
 }
 
 function handleToggleOptions() {
@@ -764,18 +794,23 @@ function handleSavePng() {
 }
 
 function wireEvents() {
-    for (const id of ['opt_hide_internal', 'opt_preserve_groups', 'opt_fold_common_tails', 'opt_show_legend', 'opt_bright']) {
+    for (const id of ['opt_hide_internal', 'opt_preserve_groups', 'opt_fold_common_tails', 'opt_show_legend']) {
         document.getElementById(id).addEventListener('change', updateDiagram);
     }
     document.getElementById('copy-svg').addEventListener('click', handleCopySvg);
     document.getElementById('save-png').addEventListener('click', handleSavePng);
-    document.getElementById('theme-toggle').addEventListener('click', handleThemeToggle);
     document.getElementById('toggle-options').addEventListener('click', handleToggleOptions);
     document.getElementById('editor-resize-handle').addEventListener('pointerdown', startEditorResize);
     document.getElementById('editor-theme').addEventListener('change', e => {
         const theme = e.target.value;
         aceEditor.setTheme(theme);
         localStorage.setItem('macro-railroad-editor-theme', theme);
+        syncPageTheme();
+    });
+    document.getElementById('render-theme').addEventListener('change', e => {
+        localStorage.setItem(RENDER_THEME_STORAGE_KEY, e.target.value);
+        syncPageTheme();
+        updateDiagram();
     });
     document.querySelector('.example-list').addEventListener('click', e => {
         const link = e.target.closest('[data-macro]');
@@ -805,8 +840,8 @@ async function bootstrap() {
     wasmReady = true;
     document.getElementById('version-info').textContent = version_info();
     initAceEditor();
-    // Sync opt_bright with restored theme after editor is ready
-    document.getElementById('opt_bright').checked = currentTheme === 'light';
+    restoreRenderTheme();
+    syncPageTheme();
     wireEvents();
     handleUrlParam();
     updateDiagram();
